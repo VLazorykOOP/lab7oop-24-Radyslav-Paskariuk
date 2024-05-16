@@ -43,6 +43,92 @@ void shellSort<char*>(char* arr[], int n) {
     }
 }
 
+// #4
+template<typename T>
+class Node {
+public:
+    T data;
+    Node* next;
+
+
+    Node(const T& newData) : data(newData), next(nullptr) {}
+};
+
+
+template<typename T>
+class LinkedList {
+private:
+    Node<T>* head;
+
+public:
+
+    LinkedList() : head(nullptr) {}
+
+    void push_back(const T& data) {
+        Node<T>* newNode = new Node<T>(data);
+        if (!head) {
+            head = newNode;
+            return;
+        }
+
+        Node<T>* current = head;
+        while (current->next) {
+            current = current->next;
+        }
+        current->next = newNode;
+    }
+
+
+    void print() const {
+        Node<T>* current = head;
+        while (current) {
+            std::cout << current->data << " ";
+            current = current->next;
+        }
+        std::cout << std::endl;
+    }
+
+    class Iterator {
+    private:
+        Node<T>* current;
+
+    public:
+        Iterator(Node<T>* startNode) : current(startNode) {}
+
+        Iterator& operator++() {
+            if (current) {
+                current = current->next;
+            }
+            return *this;
+        }
+
+
+        T& operator*() const {
+            return current->data;
+        }
+
+        // Перевірка на рівність
+        bool operator==(const Iterator& other) const {
+            return current == other.current;
+        }
+
+        // Перевірка на нерівність
+        bool operator!=(const Iterator& other) const {
+            return !(*this == other);
+        }
+    };
+
+    // Початковий ітератор
+    Iterator begin() const {
+        return Iterator(head);
+    }
+
+    // Кінцевий ітератор
+    Iterator end() const {
+        return Iterator(nullptr);
+    }
+};
+
 int main()
 {
     // #1
@@ -52,8 +138,6 @@ int main()
     std::cout << "Мінімальний рядок: " << minElement(strA, strB) << std::endl;
     std::cout << "Максимальний рядок: " << maxElement(strA, strB) << std::endl;
 
-
-    return 0;
 
     // #2
     int intArr[] = { 12, 34, 54, 2, 3 };
@@ -74,4 +158,24 @@ int main()
     }
     std::cout << std::endl;
 
+    // #4
+    LinkedList<int> list;
+    int n;
+    std::cout << "Enter the number of elements for the integer list: ";
+    std::cin >> n;
+    std::cout << "Enter " << n << " integers:" << std::endl;
+    for (int i = 0; i < n; ++i) {
+        int value;
+        std::cin >> value;
+        list.push_back(value);
+    }
+
+    std::cout << "List elements using iterator: ";
+    for (LinkedList<int>::Iterator it = list.begin(); it != list.end(); ++it) {
+        std::cout << *it << " ";
+    }
+    std::cout << std::endl;
+
+
+    return 0;
 }
